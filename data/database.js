@@ -1,29 +1,22 @@
 import { MongoClient } from "mongodb";
 
 const clusterAddress = process.env.MONGODB_CLUSTER_ADDRESS;
-const dbUsername = process.env.MONGO_DB_USERNAME;
-const dbPassword = process.env.MONGO_DB_PASSWORD;
+const dbUser = process.env.MONGODB_USERNAME;
+const dbPassword = process.env.MONGODB_PASSWORD;
 const dbName = process.env.MONGODB_DB_NAME;
 
-if (!clusterAddress || !dbUsername || !dbPassword || !dbName) {
-  throw new Error("Missing required environment variables for database connection.");
-}
+const uri = `mongodb+srv://${dbUser}:${dbPassword}@${clusterAddress}/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri);
 
-const uri = `mongodb+srv://${dbUsername}:${dbPassword}@${clusterAddress}/${dbName}?retryWrites=true&w=majority`;
+console.log('Connecting to database:', dbName);
 
-let cachedClient = null;
-
-export async function connectToDatabase() {
-  if (cachedClient) {
-    return cachedClient;
-  }
-
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
+try {
   await client.connect();
-  cachedClient = client;
-  return client;
+  await client.db(dbName).command({ ping: 1 });
+  console.log('Connected to MongoDB cluster');
+} catch (error) {
+  console.error('Error connecting to MongoDB:', error);
 }
+
+const database = client.db(dbName);
+export default database;
