@@ -16,6 +16,8 @@ try {
   console.log('Connected to MongoDB cluster');
 } catch (error) {
   console.error('Error connecting to MongoDB:', error);
+  await client.close();
+  console.log('Closed MongoDB client due to connection error');
 }
 
 const database = client.db(dbName);
