@@ -10,7 +10,7 @@ const config = {
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: `http://localhost:3000:${process.env.PORT}`,
+    baseURL: `http://localhost:${process.env.PORT || 8080}`,
   },
 };
 
