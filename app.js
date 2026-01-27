@@ -1,17 +1,9 @@
-import bodyParser from "body-parser";
 import express from "express";
+import bodyParser from "body-parser";
 import eventsRoutes from "./routes/events.js";
 
 const app = express();
-
 app.use(bodyParser.json());
-
 app.use("/api", eventsRoutes);
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-export default app;
+export default app; // just export the app, no listen()
